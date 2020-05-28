@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<body>
+
+	
+	<div align="center">
+	<h1>User Registration</h1>
+	<form action="#" th:action="@{/doTransaction}" method="post"
+		th:object="${account}">
+		<table>
+		
+		    <tr>
+				<td><label>facilityId:</label></td>
+				<td><input type="text" th:field="*{facilityTemplateId}"  /><br /></td>
+			<tr>
+			<tr>
+				<td><label>registrationId:</label></td>
+				<td><input type="text" th:field="*{accountNo}"  /><br /></td>
+			<tr>
+			<tr>
+				<td><label>CardID</label></td>
+				<td><input type="text" th:field="*{card.cardId}"  /><br /></td>
+			 <tr>
+			
+			  <tr>
+				<td><label>CardNo</label></td>
+				<td><input type="text" th:field="*{card.cardNo}"  /><br /></td>
+			 <tr>
+			 
+			 <tr>
+				<td><label>AutoGeneartedPin</label></td>
+				<td><input type="text" th:field="*{card.cardPin}"  /><br /></td>
+			 <tr>
+			 <tr>
+				<td><label>CreditLimit</label></td>
+				<td><input type="text" th:field="*{card.creditLimit}"  /><br /></td>
+			 <tr>
+			 <tr>
+				<td><label>cashLimit</label></td>
+				<td><input type="text" th:field="*{card.cashLimit}"  /><br /></td>
+			 <tr>
+			 
+			  <tr>
+				<td><label>Cvv</label></td>
+				<td><input type="text" th:field="*{card.cvv}"  /><br /></td>
+			 <tr>
+			   <tr>
+				<td><label>status</label></td>
+				<td><input type="text" th:field="*{card.status}"  /><br /></td>
+			 <tr>
+			 
+			  <tr>
+				<td><label>amount</label></td>
+				<td><input type="text" th:field="*{card.transactions[0].amount}" /><br /></td>
+			 <tr>
+			 
+			 <tr>
+				<td><label>Transaction_TYPE</label></td>
+				<td><select th:field="*{card.transactions[0].transactionType}">
+						<option  th:value="CREDIT"th:text="CREDIT" />
+						<option  th:value="DEBIT"th:text="DEBIT" />
+						<option  th:value="CASH_WIDRAW"th:text="CASH_WITH_DRAW" />
+				</select></td>
+			<tr>
+			 
+			 
+			<tr align="center">
+				<td colspan="2">
+					<button type="submit">doTransaction</button>
+				</td>
+			<tr>
+			
+		</table>
+		</form>
+		
+		</div>
+
+</body>
+</html>
