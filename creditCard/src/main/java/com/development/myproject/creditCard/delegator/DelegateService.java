@@ -1,12 +1,11 @@
 package com.development.myproject.creditCard.delegator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.development.myproject.creditCard.dto.Account;
@@ -15,6 +14,7 @@ import com.development.myproject.creditCard.dto.FacilityTemplate;
 import com.development.myproject.creditCard.dto.Registration;
 import com.development.myproject.creditCard.dto.Transaction;
 import com.development.myproject.creditCard.exception.ExceptionHandler;
+import com.development.myproject.creditCard.repository.AccountRepository;
 import com.development.myproject.creditCard.repository.CardRepository;
 import com.development.myproject.creditCard.repository.FacilityTemplateRepository;
 import com.development.myproject.creditCard.service.CreditCardAccountService;
@@ -34,11 +34,14 @@ public class DelegateService {
 	@Resource
 	private FacilityTemplateRepository facilityTemplateRepository;
 	
-	@Autowired
-	List<IAccountService> accounts;
+	@Resource
+	private List<IAccountService> accounts;
 	
 	@Resource
-	CardRepository cardRepository;
+	private CardRepository cardRepository;
+	
+	@Resource
+	private AccountRepository accountRepository;
 	
 	
 	public Account createAccount(Registration registration) {
@@ -84,20 +87,26 @@ public class DelegateService {
 	}
 	
    
+	@Transactional
 	public Account doTransaction(Account account) {
-		String type  = getAccountType(account.getFacilityTemplateId());
-		   IAccountService accountService = getAccountServiceByType(type);
-		   Card card  = accountService.doTransaction(account.getCard(), account.getCard().getTransactions().get(0));
-		   List<Transaction> transactions  = new ArrayList<Transaction>();
-		   Transaction transaction = new Transaction();
-		   Optional<Card> uiCard = cardRepository.findById(card.getCardId());
-			transactions.add(transaction);
-			account.setCard(uiCard.get());
-			account.getCard().setTransactions(transactions);
-			
-			
-		   return account;
-		   
+		String type = getAccountType(account.getFacilityTemplateId());
+		IAccountService accountService = getAccountServiceByType(type);
+		if (CommonUtil.hasAvalue(accountService) && CommonUtil.hasAvalue(account) && CommonUtil.hasAvalue(account.getCard())) {
+			List<Transaction> transactions = account.getCard().getTransactions();
+			Card card = accountService.doTransaction(account.getCard(), transactions.get(0));
+		    Optional<Card> cardData = cardRepository.findById(card.getCardId());
+		    if(cardData.isPresent()) {
+		    	cardData.get().setTransactions(transactions);
+		    	account.setCard(cardData.get());
+		    	return account;
+		    }else {
+		    	throw new ExceptionHandler("Invalid transaction ");
+		    }
+
+		} else {
+			throw new ExceptionHandler("Invalid transaction ");
+		}
+
 	}
 	
 	

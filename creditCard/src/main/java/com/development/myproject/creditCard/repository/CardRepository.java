@@ -23,7 +23,7 @@ public interface CardRepository extends CrudRepository<Card, Long>{
 	public int updateDebitTransaction(double amount,long cardId ,String cardNo,String cardPin);
 	 
 	 @Modifying
-	 @Query("update Card c set c.balance = c.balance+?1,c.cashBalance=c.cashBalance+?2 where  c.cardId =?3 and c.cardNo=?4 and c.cardPin=?5" )
+	 @Query("update Card c set c.balance = c.balance+?1,c.cashBalance=?2 where  c.cardId =?3 and c.cardNo=?4 and c.cardPin=?5" )
 	 public int updateCreditTransaction(double amount,double cashAmount,long cardId ,String cardNo,String cardPin);
 	 
 	 @Modifying

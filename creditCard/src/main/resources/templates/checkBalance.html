@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+function getCardDetails(){
+	
+	var cardNo = $("#cardNo").val();
+	$.ajax(
+		    {
+		         type: "GET",
+		         url: "/creditCard/card/balance/"+cardNo,
+		         contentType: "application/json; charset=utf-8",
+		         
+
+		         cache: false,
+		         success: function (data) {
+		        	
+		        	if(data.sucess){
+		        		var tab ="<table>"
+		        		var row ="<tr><td>cardNo</td><td>"+data.response.cardNo+"</td></tr>";
+		        		row = row +"<tr><td>cardLimit</td><td>"+data.response.cardLimit+"</td></tr>";
+		        		row = row +"<tr><td>balance</td><td>"+data.response.balance+"</td></tr>";
+		        		row = row +"<tr><td>CashLimit</td><td>"+data.response.cashLimit+"</td></tr>";
+		        		row = row +"<tr><td>cashBalance</td><td>"+data.response.cashBalance+"</td></tr>";
+		        		
+		        		tab = tab + row+"</table>"
+		        		 var dvTable = $("#balance");
+		                dvTable.html("");
+		                dvTable.append(tab);
+		                
+		                dvTable.append("<p style=text-align: center;><a title=doTransaction href=getTransactionPage?cardNo="+data.response.cardNo+">do Transaction</a></p>")
+		        		
+		        	} else{
+		        		 var dvTable = $("#balance");
+			                dvTable.html("");
+			                dvTable.append(data.errorMessage);
+		        		
+		        	}
+		                  
+		
+		         
+		         
+		         },
+		    error: function (msg) {
+
+		        alert(msg.responseText);
+		      }
+		   });
+
+}
+
+
+</script>
+</head>
+<body>
+ 
+ <div align="center">
+<label>EnterCardNumber:</label>
+<input type="text" id='cardNo' /> <input type="button" onClick="getCardDetails()" value="getBalance">
+<br><br>
+<div id = "balance">
+
+</div>
+<br>
+</div>
+</div>
+</body>
+
+
+</html>

@@ -252,6 +252,9 @@ public class CreditCardAccountService implements IAccountService {
 			
 		}
 		
+		
+		//Need to Configure a cronJob to  run every night to check any customer EOM  data and run
+		@Transactional
 		public void doEOMProcess(Account account) {
 			Optional<List<EndOfTheMonthReport>> optional = Optional.ofNullable(endOfTheMonthReportRepository.findRecordByAccountId(account.getId()));
 			Card card = account.getCard();
@@ -274,7 +277,7 @@ public class CreditCardAccountService implements IAccountService {
 				
 				// outstanding interest on lastmoontEom
 				
-				Transaction outStandingInterest = generateTransactionType(CommonUtil.calculateAmountByPercentage(cashWithAmountOfCurrentMonth, 2), card,TransactionType.INTEREST_ON_UN_PAID_OUTSTANDING.getTransactionType());
+				Transaction outStandingInterest = generateTransactionType(CommonUtil.calculateAmountByPercentage(lastMonthEndOfTheMonthReport.getOutstandingAmount(), 2), card,TransactionType.INTEREST_ON_UN_PAID_OUTSTANDING.getTransactionType());
 				doTransaction(card, outStandingInterest);
 				
 				

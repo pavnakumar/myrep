@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.development.myproject.creditCard.delegator.DelegateService;
 import com.development.myproject.creditCard.dto.Account;
+import com.development.myproject.creditCard.dto.Card;
 import com.development.myproject.creditCard.dto.Registration;
+import com.development.myproject.creditCard.repository.AccountRepository;
+import com.development.myproject.creditCard.repository.CardRepository;
 import com.development.myproject.creditCard.service.RegistrationService;
 
 @Controller
@@ -22,6 +26,12 @@ public class WebController {
 	
 	@Resource
 	private DelegateService delegateService;
+	
+	@Resource
+	private CardRepository CardRepository; 
+	
+	@Resource
+	private AccountRepository accountRepo;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 
@@ -46,8 +56,23 @@ public class WebController {
 	@PostMapping(value = "/doTransaction")
 	public String doTransaction(Account account,  Model model) {
 		model.addAttribute("account", delegateService.doTransaction(account));
-		return "registrationStatus"; 
+		return "TransactionSucessFul"; 
 	}
+	
+	@GetMapping(value = "/checkBalance")
+	public String checkBalance() {
+	
+		return "checkBalance"; 
+	}
+	
+	@GetMapping(value = "/getTransactionPage")
+	public String getTransactionPage(@RequestParam String cardNo, Model model) {
+		Card card =CardRepository.findCardByCardNo(cardNo);
+		model.addAttribute("account", card.getAccount());
+		return "registrationStatus"; 
+		
+	}
+	
 	
 
 }

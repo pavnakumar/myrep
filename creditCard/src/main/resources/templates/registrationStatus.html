@@ -10,49 +10,54 @@
 
 	
 	<div align="center">
-	<h1>User Registration</h1>
+	<h1>Transaction Success</h1>
 	<form action="#" th:action="@{/doTransaction}" method="post"
 		th:object="${account}">
 		<table>
 		
 		    <tr>
 				<td><label>facilityId:</label></td>
-				<td><input type="text" th:field="*{facilityTemplateId}"  /><br /></td>
+				<td><input type="text" th:field="*{facilityTemplateId}" readonly="true" /><br /></td>
 			<tr>
 			<tr>
 				<td><label>registrationId:</label></td>
-				<td><input type="text" th:field="*{accountNo}"  /><br /></td>
+				<td><input type="text" th:field="*{accountNo}" readonly="true" /><br /></td>
 			<tr>
 			<tr>
 				<td><label>CardID</label></td>
-				<td><input type="text" th:field="*{card.cardId}"  /><br /></td>
+				<td><input type="text" th:field="*{card.cardId}"  readonly="true" /><br /></td>
 			 <tr>
 			
 			  <tr>
 				<td><label>CardNo</label></td>
-				<td><input type="text" th:field="*{card.cardNo}"  /><br /></td>
+				<td><input type="text" th:field="*{card.cardNo}"  readonly="true" /><br /></td>
 			 <tr>
 			 
 			 <tr>
 				<td><label>AutoGeneartedPin</label></td>
-				<td><input type="text" th:field="*{card.cardPin}"  /><br /></td>
+				<td><input type="text" th:field="*{card.cardPin}" readonly="true" /><br /></td>
 			 <tr>
 			 <tr>
 				<td><label>CreditLimit</label></td>
-				<td><input type="text" th:field="*{card.creditLimit}"  /><br /></td>
+				<td><input type="text" th:field="*{card.creditLimit}"  readonly="true"/><br /></td>
+			 <tr>
+			 
+			 <tr>
+				<td><label>CreditLimitLeft</label></td>
+				<td><input type="text" th:field="*{card.balance}"  readonly="true"/><br /></td>
 			 <tr>
 			 <tr>
 				<td><label>cashLimit</label></td>
-				<td><input type="text" th:field="*{card.cashLimit}"  /><br /></td>
+				<td><input type="text" th:field="*{card.cashLimit}"  readonly="true"/><br /></td>
 			 <tr>
 			 
 			  <tr>
 				<td><label>Cvv</label></td>
-				<td><input type="text" th:field="*{card.cvv}"  /><br /></td>
+				<td><input type="text" th:field="*{card.cvv}"  readonly="true"/><br /></td>
 			 <tr>
 			   <tr>
 				<td><label>status</label></td>
-				<td><input type="text" th:field="*{card.status}"  /><br /></td>
+				<td><input type="text" th:field="*{card.status}" readonly="true" /><br /></td>
 			 <tr>
 			 
 			  <tr>
@@ -68,7 +73,6 @@
 						<option  th:value="CASH_WIDRAW"th:text="CASH_WITH_DRAW" />
 				</select></td>
 			<tr>
-			 
 			 
 			<tr align="center">
 				<td colspan="2">
