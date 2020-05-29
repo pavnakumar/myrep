@@ -62,6 +62,9 @@ public class CreditCardAccountService implements IAccountService {
 	private static final int DEFAULT_LATE_PAYMENT_CHARGES_PER =5;
 	
 	private static final int DEFAULT_LATE_PAYMENT_CHARGES_AMOUNT =100;
+	
+	private static final int DEFAULT_DELINQUENT_PAYMENT_PERCENTAGE =25;
+
 
 
 	private static final String  DEFAULT_CREDIT_LIMIT_KEY = "DEFAULT_CREDIT_LIMIT";
@@ -199,14 +202,28 @@ public class CreditCardAccountService implements IAccountService {
 					double cashBalance = current.getCashBalance() + transaction.getAmount();
 					count= cardRepository.updateCreditTransaction(transaction.getAmount(),cashBalance>current.getCashBalance()?current.getCashLimit():cashBalance,card.getCardId(),card.getCardNo(),card.getCardPin());
 				}else {
-					if(TransactionType.INTEREST_ON_CASH_WITHDRAW.getTransactionType().equals(transaction.getTransactionType())) {
-						count= cardRepository.updateDebitTransaction(transaction.getAmount(),card.getCardId(),current.getCardNo(),card.getCardPin());
-					}
+					count= cardRepository.updateDebitTransaction(transaction.getAmount(),card.getCardId(),current.getCardNo(),card.getCardPin());
+					
 				}
 				if(count==0) {
 					throw new ExceptionHandler("please check limit");
 				}
 				
+				//Delinquent to active change status status
+
+				if(TransactionType.CREDIT.getTransactionType().equals(transaction.getTransactionType()) && Status.DELINQUENT.getStatus().equals(card.getStatus())) {
+					Optional<List<EndOfTheMonthReport>> optional = Optional.ofNullable(endOfTheMonthReportRepository.findRecordByAccountId(card.getAccount().getId()));
+
+					if (optional.isPresent() && optional.get().size()>0) {
+						EndOfTheMonthReport lastMonthEndOfTheMonthReport = optional.get().get(0);
+						double amount = CommonUtil.calculateAmountByPercentage( lastMonthEndOfTheMonthReport.getOutstandingAmount(),DEFAULT_DELINQUENT_PAYMENT_PERCENTAGE);
+						if(amount>=transaction.getAmount()) {
+							card.setStatus(Status.ACTIVE.getStatus());
+							cardRepository.save(card);
+						}
+					}
+						
+				}
 				transaction.setTransactionDate(new Date());
 				transaction.setCard(current);
 				transactionRepository.save(transaction);
@@ -285,7 +302,7 @@ public class CreditCardAccountService implements IAccountService {
 				//Delinquent change status
 				 boolean isDelinquent = isDelinquent(lastMonthEndOfTheMonthReport);
 				 if(isDelinquent){
-					 cardRepository.changeCardStatus(Status.DELiNQUENT.getStatus(),Status.ACTIVE.getStatus());
+					 cardRepository.changeCardStatus(Status.DELINQUENT.getStatus(),Status.ACTIVE.getStatus());
 				 }
 				 
 

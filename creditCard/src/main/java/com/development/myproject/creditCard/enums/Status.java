@@ -6,7 +6,7 @@ public enum Status {
 	APPROVED("Approved"),
 	ACTIVE("Active"),
 	INACTIVE("Inactive"),
-	DELiNQUENT("Delinquent");
+	DELINQUENT("Delinquent");
 	
 	Status(String status) {
 		this.status = status;
