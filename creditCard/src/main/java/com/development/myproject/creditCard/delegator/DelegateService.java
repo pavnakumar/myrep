@@ -114,7 +114,7 @@ public class DelegateService {
 	}
 	@Transactional
 	public void runEOMJOB() {
-	    List<Account> accounts = accountRepository.getAccountsByDate(Status.ACTIVE.getStatus(),new  Date(),new Date());
+	    List<Account> accounts = accountRepository.getAccountsByDate(Status.ACTIVE.getStatus(),CommonUtil.getDateByGivenDays(-1),new Date());
 	    if(CommonUtil.hasAvalue(accounts) && accounts.size()>0) {
 	    	 for (Account account : accounts) {
 	 	    	String type = getAccountType(account.getFacilityTemplateId());

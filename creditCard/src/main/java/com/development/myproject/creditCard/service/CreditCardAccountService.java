@@ -85,24 +85,13 @@ public class CreditCardAccountService implements IAccountService {
 		Card card = generateCardDetails(registration);
 		card.setAccount(account);
 		account.setCard(card);
+		account.setStatus(Status.ACTIVE.getStatus());
 		accountRepository.save(account);
 		registration.setAccount(account);
         return account; 
 	}	
 	
-	
-	
-	public Account generateStatement(long accountId) {
-	Optional<Account> optionalAOptional = accountRepository.findById(accountId);
-		if(optionalAOptional.isEmpty()) {
-			throw new RuntimeException("no account found");
-		}
-		Account account = optionalAOptional.get();
-		Card card = account.getCard();
-	
-		return account;
-	}
-	
+
 	
 	private Card generateCardDetails(Registration registration) {
 		Optional<FacilityTemplate> fOptional= facilityTemplateRepository.findById(registration.getFacilityTemplateId());

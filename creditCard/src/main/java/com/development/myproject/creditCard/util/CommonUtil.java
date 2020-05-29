@@ -49,6 +49,12 @@ public class CommonUtil {
 		cal.add(Calendar.MONTH, noOfMonths); // to get previous year add -1
 		return cal.getTime();
 	}
+	
+	public static Date getDateByGivenDays(int days) {
+	    final Calendar cal = Calendar.getInstance();
+	    cal.add(Calendar.DATE, days);
+	    return cal.getTime();
+	}
 
 
 }
