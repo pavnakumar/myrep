@@ -16,6 +16,8 @@ import javax.persistence.PostPersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Type;
+
 import com.development.myproject.creditCard.enums.util.AccountNumberGenerator;
 
 
@@ -44,8 +46,13 @@ public class Account  implements Serializable {
 
 	private String status;
 	
+	@Type(type="yes_no")
+	private boolean  eodProcessed ;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date statementGenerationDate;
+	
+
 	
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -138,6 +145,21 @@ public class Account  implements Serializable {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+
+	public boolean isEodProcessed() {
+		return eodProcessed;
+	}
+
+
+	public void setEodProcessed(boolean eodProcessed) {
+		this.eodProcessed = eodProcessed;
+	}
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 	

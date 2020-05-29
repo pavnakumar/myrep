@@ -78,7 +78,7 @@ public class CreditCardAccountService implements IAccountService {
 		account.setCreatedDate(new Date());
 		account.setFacilityTemplateId(registration.getFacilityTemplateId());;
 		account.setCustomer(registration.getCustomer());
-		account.setStatementGenerationDate(new Date());
+		account.setStatementGenerationDate(CommonUtil.getDateByGivenMonths(1));
 		Card card = generateCardDetails(registration);
 		card.setAccount(account);
 		account.setCard(card);
@@ -254,13 +254,14 @@ public class CreditCardAccountService implements IAccountService {
 		
 		
 		//Need to Configure a cronJob to  run every night to check any customer EOM  data and run
+		@Override
 		@Transactional
-		public void doEOMProcess(Account account) {
+		public EndOfTheMonthReport doEOMProcess(Account account) {
 			Optional<List<EndOfTheMonthReport>> optional = Optional.ofNullable(endOfTheMonthReportRepository.findRecordByAccountId(account.getId()));
 			Card card = account.getCard();
 			double cashWithAmountOfCurrentMonth = 0.0;
 
-			if (optional.isPresent()) {
+			if (optional.isPresent() && optional.get().size()>0) {
 				EndOfTheMonthReport lastMonthEndOfTheMonthReport = optional.get().get(0);
 				cashWithAmountOfCurrentMonth = calculateCurrentMonthCashWithDraw(card, lastMonthEndOfTheMonthReport);
 				double payment = calculateBillPayment(card, lastMonthEndOfTheMonthReport);
@@ -304,8 +305,11 @@ public class CreditCardAccountService implements IAccountService {
 			account.setCard(current);
 			EndOfTheMonthReport currentEOMReport = generateEodEndOfTheMonthReport(account);
 			endOfTheMonthReportRepository.save(currentEOMReport);
-			
+			account.setStatementGenerationDate(CommonUtil.getDateByGivenMonths(1));
+			account.setEodProcessed(true);
+			accountRepository.save(account);
 			//Completed
+			return currentEOMReport;
 			
 			
 		}
@@ -352,6 +356,7 @@ public class CreditCardAccountService implements IAccountService {
         	Card card  = account.getCard();
     		EndOfTheMonthReport endOfTheMonthReport = new EndOfTheMonthReport();
     		endOfTheMonthReport.setAccountId(account.getId());
+    		endOfTheMonthReport.setCardId(account.getCard().getCardId());
     		endOfTheMonthReport.setCashWithDrawAmount(card.getCashLimit()-card.getCashBalance());
     		endOfTheMonthReport.setOutstandingAmount(card.getCreditLimit()-card.getBalance());
     		endOfTheMonthReport.setCustomerId(account.getCustomer().getCustomerId());

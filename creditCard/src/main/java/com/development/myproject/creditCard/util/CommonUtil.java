@@ -20,12 +20,13 @@ public class CommonUtil {
         
 	}
 	
-	public static boolean hasAvalue(Object object) {
-		return Objects.nonNull(object);
-	}
+	
 	
 	public static boolean hasAvalue(List<Object> list) {
 		return Objects.nonNull(list)&&!list.isEmpty();
+	}
+	public static boolean hasAvalue(Object object) {
+		return Objects.nonNull(object);
 	}
 	
 	public static double calculateAmountByPercentage(double amount ,double percentage) {

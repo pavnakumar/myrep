@@ -1,5 +1,6 @@
 package com.development.myproject.creditCard.delegator;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import com.development.myproject.creditCard.dto.Card;
 import com.development.myproject.creditCard.dto.FacilityTemplate;
 import com.development.myproject.creditCard.dto.Registration;
 import com.development.myproject.creditCard.dto.Transaction;
+import com.development.myproject.creditCard.enums.Status;
 import com.development.myproject.creditCard.exception.ExceptionHandler;
 import com.development.myproject.creditCard.repository.AccountRepository;
 import com.development.myproject.creditCard.repository.CardRepository;
@@ -20,6 +22,8 @@ import com.development.myproject.creditCard.repository.FacilityTemplateRepositor
 import com.development.myproject.creditCard.service.CreditCardAccountService;
 import com.development.myproject.creditCard.service.IAccountService;
 import com.development.myproject.creditCard.util.CommonUtil;
+
+
 
 
 
@@ -107,6 +111,28 @@ public class DelegateService {
 			throw new ExceptionHandler("Invalid transaction ");
 		}
 
+	}
+	@Transactional
+	public void runEOMJOB() {
+	    List<Account> accounts = accountRepository.getAccountsByDate(Status.ACTIVE.getStatus(),new  Date(),new Date());
+	    if(CommonUtil.hasAvalue(accounts) && accounts.size()>0) {
+	    	 for (Account account : accounts) {
+	 	    	String type = getAccountType(account.getFacilityTemplateId());
+	 			IAccountService accountService = getAccountServiceByType(type);
+	 			if (CommonUtil.hasAvalue(accountService) && CommonUtil.hasAvalue(account) && CommonUtil.hasAvalue(account.getCard())) {
+	 				try {
+		 				accountService.doEOMProcess(account);
+	 				}catch (Exception e) {
+	 					e.printStackTrace();
+	 					account.setEodProcessed(false);
+					}
+
+	 			} else {
+	 				throw new ExceptionHandler("Invalid transaction ");
+	 			}
+
+	 		}
+	    }
 	}
 	
 	

@@ -70,8 +70,8 @@ public class WebController {
 		Card card =CardRepository.findCardByCardNo(cardNo);
 		model.addAttribute("account", card.getAccount());
 		return "registrationStatus"; 
-		
 	}
+	
 	
 	
 
