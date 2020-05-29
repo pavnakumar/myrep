@@ -14,9 +14,9 @@ public class MyCustomErrorController implements ErrorController {
   @ResponseBody
   public String handleError(HttpServletRequest request) {
       Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
-      return String.format("<html><body><h2>Error Page</h2><div>Status code: <b>%s</b></div>"
-                      + "<div>Exception Message: <b>%s</b></div><body></html>",
-              exception==null? "N/A": exception.getMessage());
+      return String.format("<html><body><h2>Error Page</h2>"
+                      + "<div align='center' color=red>Message: <b>%s</b></div><body></html>",
+               exception==null? "N/A": exception.getCause().getMessage());
   }
 
   @Override

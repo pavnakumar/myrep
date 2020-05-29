@@ -1,5 +1,6 @@
 package com.development.myproject.creditCard.enums.util;
 
+import java.util.Date;
 import java.util.Random;
 
 public enum AccountNumberGenerator {
@@ -15,22 +16,22 @@ public enum AccountNumberGenerator {
 	
 	public String accountGenerator(Long id,int length) {
 		 String accountStr = id.toString();
+		 String creditCardPrifix =  new Date().getTime()+"";
 		 StringBuilder accountNo = new StringBuilder();
 		 for(int i =0;i<length-accountStr.length();i++) {
-			 accountNo.append("0");
+			 if(i<creditCardPrifix.length()) {
+				 accountNo.append(creditCardPrifix.charAt(i));
+			 }else{
+				 accountNo.append("0");
+			 }
 		 }
 		 accountNo.append(accountStr);
 		 return accountNo.toString(); 
 	}
 	
 	public String generatorCardNo(Long id,int length) {
-		 String accountStr = id.toString();
-		 StringBuilder accountNo = new StringBuilder();
-		 for(int i =0;i<length-accountStr.length();i++) {
-			 accountNo.append("0");
-		 }
-		 accountNo.append(accountStr);
-		 return accountNo.toString(); 
+		
+		 return generatorCardNo(id, length); 
 	}
 	
 	public String generatorCvvNo(int length) {
